@@ -1,0 +1,20 @@
+.logo-new {
+  opacity: 1;
+  transition: opacity 400ms ease-out;
+}
+
+.logo-i, .logo-ful {
+  transition: transform 400ms ease;
+}
+
+.logo:hover .logo-new {
+  opacity: 0
+}
+
+.logo:hover .logo-i {
+  transform: translate(-30px);
+}
+
+.logo:hover .logo-ful {
+  transform: translate(-51px);
+}
