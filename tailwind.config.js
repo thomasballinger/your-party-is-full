@@ -1,5 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  safelist: [
+    "red",
+    "fuchsia",
+    "rose",
+    "orange",
+    "brown",
+    "emerald",
+    "pink",
+    "green",
+    "yellow",
+    "blue",
+    "purple",
+    "violet",
+  ].flatMap(c => ['100', '200', '300'].map((num) => `bg-${c}-${num}`)),
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",

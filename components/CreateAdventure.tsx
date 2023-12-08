@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutationWithAuth } from "@convex-dev/convex-lucia-auth/react";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(2).max(100),
@@ -23,7 +24,9 @@ const formSchema = z.object({
 });
 
 export function CreateAdventure() {
-  const [createAdventureExpanded, setCreateAdventureExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,13 +38,17 @@ export function CreateAdventure() {
 
   const createAdventure = useMutationWithAuth(api.myFunctions.createAdventure);
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await createAdventure(values);
+    const eventId = await createAdventure(values);
+    setExpanded(false);
+    router.push(`/e/${eventId}`);
   };
 
   return (
     <>
-      <Button onClick={() => setCreateAdventureExpanded(!createAdventureExpanded)}>New Adventure</Button>
-      {createAdventureExpanded && (
+      {!expanded && (
+        <Button onClick={() => setExpanded(!expanded)}>Start a new adventure party</Button>
+      )}
+      {expanded && (
         <p>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -50,7 +57,7 @@ export function CreateAdventure() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Title</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="A Short Walk in the Woods"
@@ -77,12 +84,14 @@ export function CreateAdventure() {
                       />
                     </FormControl>
                     <FormDescription>
-                      Goals, where and when to meet, and how to get what we{"'"}re after.
+                      Goals, where and when to meet, and how to get what we{"'"}
+                      re after.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              <Button type="submit">Submit</Button>
             </form>
           </Form>
         </p>

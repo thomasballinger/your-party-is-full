@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   signUpWithEmailAndPassword,
 } from "@convex-dev/convex-lucia-auth/email";
+import { classValidator } from "./schema";
 
 export const signIn = mutationWithAuth({
   args: {
@@ -23,7 +24,7 @@ export const signUp = mutationWithAuth({
   },
   handler: async (ctx, { email, password }) => {
     const session = await signUpWithEmailAndPassword(ctx, email, password, {
-      user: { class: "druid", level: 1, profile: "nice guy" },
+      user: { class: "Druid", level: 1, profile: "nice guy" },
       session: {},
     });
     return session.sessionId;

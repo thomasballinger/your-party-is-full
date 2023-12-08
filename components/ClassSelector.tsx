@@ -17,13 +17,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { classes as classValues } from "@/lib/dnd"
+import { DndClass, classes as classValues } from "@/lib/dnd"
+import { useMutationWithAuth, useQueryWithAuth } from "@convex-dev/convex-lucia-auth/react"
+import { api } from "@/convex/_generated/api"
 
-const classes = classValues.map(c => ({value: c, label: c.slice(0).toUpperCase() + c.slice(1)}));
+const classes = classValues.map(c => ({value: c.toLowerCase(), label: c}));
 
-export function ComboboxDemo() {
+
+
+export function ClassSelector(props: {className?: string}) {
+  const user = useQueryWithAuth(api.myFunctions.getCurrentUser, {});
+  if (!user) return '';
+  return <ClassSelectorInner {...props}/>;
+}
+
+function ClassSelectorInner(props: {className?: string}) {
+  const user = useQueryWithAuth(api.myFunctions.getCurrentUser, {});
+
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
+  const [value, setValue] = React.useState(user?.class.toLowerCase() || "");
+
+  const update = useMutationWithAuth(api.myFunctions.updateCurrentUser);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -32,7 +46,8 @@ export function ComboboxDemo() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className={`w-[110px] justify-between ${props.className || ''}`}
+          
         >
           {value
             ? classes.find((c) => c.value === value)?.label
@@ -42,7 +57,7 @@ export function ComboboxDemo() {
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search class..." />
           <CommandEmpty>No class found</CommandEmpty>
           <CommandGroup>
             {classes.map((c) => (
@@ -50,7 +65,8 @@ export function ComboboxDemo() {
                 key={c.value}
                 value={c.value}
                 onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue)
+                  setValue(currentValue);
+                  void update({"class": (currentValue.slice(0, 1).toUpperCase() + currentValue.slice(1)) as DndClass});
                   setOpen(false)
                 }}
               >
