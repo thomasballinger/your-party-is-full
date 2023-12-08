@@ -49,7 +49,7 @@ export default function Home() {
       <h2
         className={`text-3xl font-extrabold my-4 text-center ${syne.className}`}
       >
-        Five isn't anything. 
+        Five isn{"'"}t anything.
       </h2>
     </>
   );
