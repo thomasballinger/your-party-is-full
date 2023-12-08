@@ -1,16 +1,17 @@
 import { v } from "convex/values";
 import { mutationWithAuth, queryWithAuth } from "@convex-dev/convex-lucia-auth";
 import { classValidator } from "./schema";
-import { Id } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 import {
   DatabaseReader,
   DatabaseWriter,
   QueryCtx,
+  action,
   internalMutation,
   mutation,
 } from "./_generated/server";
 import { npcJoin } from "./seed";
-import { api, internal } from "./_generated/api"
+import { api, internal } from "./_generated/api";
 
 const DEFAULT_DESCRIPTION =
   "Come for the treasure, stay for the prison sentence.";
@@ -142,6 +143,16 @@ export const leaveParty = mutationWithAuth({
   },
 });
 
+export const getEventInternal = internalMutation(async (
+ctx,
+args: {id: Id<"events">}
+) => {
+  const {members} =  await partyMembers(ctx, args.id);
+  const event = await ctx.db.get(args.id);
+  if (!event) throw new Error('event not found');
+  return { ...event, members };
+});
+
 export async function partyMembers(
   ctx: { db: DatabaseReader },
   id: Id<"events">
@@ -198,10 +209,49 @@ export const createAdventure = mutationWithAuth({
       status: "current",
     });
 
-    await ctx.scheduler.runAfter(5000, internal.seed.npcJoin, {partyId: id});
-    await ctx.scheduler.runAfter(8000, internal.seed.npcJoin, {partyId: id});
-    await ctx.scheduler.runAfter(10000, internal.seed.npcJoin, {partyId: id});
+    await ctx.scheduler.runAfter(5000, internal.seed.npcJoin, { partyId: id });
+    await ctx.scheduler.runAfter(8000, internal.seed.npcJoin, { partyId: id });
+    await ctx.scheduler.runAfter(10000, internal.seed.npcJoin, { partyId: id });
 
     return id;
+  },
+});
+
+import OpenAI from "openai";
+
+export const getExcuse = action({
+  args: { eventId: v.id("events") },
+  handler: async (ctx, { eventId }) => {
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_KEY,
+    });
+
+    const event: { members: Doc<"users">[] } & Doc<"events"> = await ctx.runMutation(internal.party.getEventInternal, {id: eventId});
+
+    const partyString = event.members.map(m => `- ${m.email}: level ${m.level} ${m.class}: ${m.profile}`).join('\n');
+
+    const prompt = `In a fantasy Dungeons and Dragons-like world, this an adventuring party:
+    ${partyString}
+
+    This is the quest: ${event.title}
+
+    This is more information about the quest: ${event.description}
+
+    Please choose one of the characters that should be dismissed from the party and state the reasoning.
+    
+    Please respond with just the decision and the reason, without restating the question.
+    
+    Please respond in the style of a tactful management consultant, trying putting a positive spin on things.`;
+
+    console.log(prompt);
+
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [{ role: "user", content: prompt }],
+      model: "gpt-4",
+    });
+
+    console.log(chatCompletion.choices[0].message)
+
+    return chatCompletion.choices[0].message.content!;
   },
 });

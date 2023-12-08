@@ -9,6 +9,9 @@ import {
 import { Syne } from "next/font/google";
 import { AuthForm } from "../../auth";
 import { Logo } from "@/components/Logo";
+import { useState } from "react";
+import { useAction } from "convex/react";
+import { Id } from "@/convex/_generated/dataModel";
 
 const syne = Syne({ subsets: ["latin"], weight: ["700"], variable: "--syne" });
 
@@ -35,15 +38,23 @@ export default function Party({ params: { id } }: { params: { id: string } }) {
       <p className="text-l font-semibold my-6 text-center">
         {event.description}
       </p>
-      {event.isFull && (<>
-        <h2
-          className={`text-5xl font-extrabold my-6 text-center ${syne.className}`}
-        >
-          {event.viewerIsMember ? "Your party is full!" : "Party is full!"}
-        </h2>
-       { event.viewerIsMember && <p className="text-l font-semibold my-6 text-center"> 
-        Contact Axe and Ledger&#8482; today to solve your get help sending someone home without hurting any feelings.
-      </p>}
+      {event.isFull && (
+        <>
+          <h2
+            className={`text-5xl font-extrabold my-6 text-center ${syne.className}`}
+          >
+            {event.viewerIsMember ? "Your party is full!" : "Party is full!"}
+          </h2>
+          {event.viewerIsMember && (
+            <>
+              <p className="text-l font-semibold my-6 text-center">
+                Need to open up a spot? Contact Axe and Ledger&#8482; today to
+                solve your get help sending someone home without hurting any
+                feelings.
+              </p>
+              <Excuse eventId={event._id} />
+            </>
+          )}
         </>
       )}
       {!loggedIn && (
@@ -80,4 +91,23 @@ export default function Party({ params: { id } }: { params: { id: string } }) {
       <div className="my-10" />
     </div>
   );
+}
+
+function Excuse({eventId}: {eventId: Id<"events">}) {
+  const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
+  const getReason = useAction(api.party.getExcuse)
+
+  if (response) {
+    return <p>{response}</p>
+  }
+  if (loading) {
+    return <p>please wait while we do whatever management consultants do...</p>
+  }
+  return <Button onClick={async () => {
+    setLoading(true)
+    const reason = await getReason({eventId});
+    setLoading(false)
+    setResponse(reason);
+  }} className="bg-slate-600 mb-4">Help me send someone home (free sample)</Button>;
 }
