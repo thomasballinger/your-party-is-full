@@ -1,20 +1,28 @@
-export function Logo() {
-  const classNames = "logo logo-orig";
+import { CSSProperties } from 'react';
+
+export function Logo({style={}, className=""}: {style?: CSSProperties, className?: string}) {
+  const classNames = "logo logo-orig " + className;
+  return (
+    <svg
+      style={{ width: 240, ...style}}
+      viewBox="80 0 200 35"
+      xmlns="http://www.w3.org/2000/svg"
+      className={classNames}
+    >
+      <Part />
+      <Y />
+      <I />
+      <S />
+      <Ful />
+      <LastEl />
+    </svg>
+  );
+}
+
+export function LogoLink() {
   return (
     <a href="/">
-      <svg
-        style={{ width: 240 }}
-        viewBox="80 0 200 35"
-        xmlns="http://www.w3.org/2000/svg"
-        className={classNames}
-      >
-        <Part />
-        <Y />
-        <I />
-        <S />
-        <Ful />
-        <LastEl />
-      </svg>
+      <Logo />
     </a>
   );
 }

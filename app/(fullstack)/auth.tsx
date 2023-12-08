@@ -1,6 +1,5 @@
 "use client";
 
-import { ClassSelector } from "@/components/ClassSelector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";

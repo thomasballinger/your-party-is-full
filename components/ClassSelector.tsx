@@ -1,43 +1,44 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
+import * as React from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { DndClass, classes as classValues } from "@/lib/dnd"
-import { useMutationWithAuth, useQueryWithAuth } from "@convex-dev/convex-lucia-auth/react"
-import { api } from "@/convex/_generated/api"
+} from "@/components/ui/popover";
+import { DndClass, classes as classValues } from "@/lib/dnd";
+import {
+  useMutationWithAuth,
+  useQueryWithAuth,
+} from "@convex-dev/convex-lucia-auth/react";
+import { api } from "@/convex/_generated/api";
 
-const classes = classValues.map(c => ({value: c.toLowerCase(), label: c}));
+const classes = classValues.map((c) => ({ value: c.toLowerCase(), label: c }));
 
-
-
-export function ClassSelector(props: {className?: string}) {
-  const user = useQueryWithAuth(api.myFunctions.getCurrentUser, {});
-  if (!user) return '';
-  return <ClassSelectorInner {...props}/>;
+export function ClassSelector(props: { className?: string }) {
+  const user = useQueryWithAuth(api.party.getCurrentUser, {});
+  if (!user) return "";
+  return <ClassSelectorInner {...props} />;
 }
 
-function ClassSelectorInner(props: {className?: string}) {
-  const user = useQueryWithAuth(api.myFunctions.getCurrentUser, {});
+function ClassSelectorInner(props: { className?: string }) {
+  const user = useQueryWithAuth(api.party.getCurrentUser, {});
 
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(user?.class.toLowerCase() || "");
 
-  const update = useMutationWithAuth(api.myFunctions.updateCurrentUser);
+  const update = useMutationWithAuth(api.party.updateCurrentUser);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -46,8 +47,7 @@ function ClassSelectorInner(props: {className?: string}) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={`w-[110px] justify-between ${props.className || ''}`}
-          
+          className={`w-[110px] justify-between ${props.className || ""}`}
         >
           {value
             ? classes.find((c) => c.value === value)?.label
@@ -66,8 +66,11 @@ function ClassSelectorInner(props: {className?: string}) {
                 value={c.value}
                 onSelect={(currentValue) => {
                   setValue(currentValue);
-                  void update({"class": (currentValue.slice(0, 1).toUpperCase() + currentValue.slice(1)) as DndClass});
-                  setOpen(false)
+                  void update({
+                    class: (currentValue.slice(0, 1).toUpperCase() +
+                      currentValue.slice(1)) as DndClass,
+                  });
+                  setOpen(false);
                 }}
               >
                 <Check
@@ -83,5 +86,5 @@ function ClassSelectorInner(props: {className?: string}) {
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

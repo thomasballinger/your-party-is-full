@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "npm-run-all --parallel dev:frontend dev:backend",
     "dev:frontend": "next dev",
-    "dev:backend": "convex dev",
+    "dev:backend": "convex dev --run seed:populate",
     "predev": "convex dev --until-success && convex dashboard",
     "build": "next build",
     "start": "next start",

@@ -27,26 +27,37 @@ export default function Home() {
       <h2
         className={`text-3xl font-extrabold my-4 text-center ${syne.className}`}
       >
-        Hometown management consultancy Axe and Ledger&#8482; is here to help with Party Is Full.
+        Hometown management consultancy Axe and Ledger&#8482; is here to help
+        with Party Is Full.
       </h2>
-      
+
       {sessionId ? <SignedIn /> : <AuthForm />}
 
-    <h2
-        className={`text-xl my-4 text-center`}
-      >
-Everyone knows that four is the ideal size for a party of adventurers. It's a party, not a fellowship!
-</h2>
+      <h2 className={`text-xl my-4 text-center`}>
+        Adventures across the land report that four is the ideal size for quests of all kinds.
+        It{"'"}s a party, not a fellowship!
+      </h2>
       <p className="text-center text-xl">
-      When someone new wants to join we help decide who goes home and come up with reasons why it isn{"'"}t you.
+        When someone new wants to join Axe and Ledger&#8482; help decide who goes home and comes up
+        with reasons why it isn{"'"}t you.
       </p>
+      <h2
+        className={`text-3xl font-extrabold my-4 text-center ${syne.className}`}
+      >
+        Two is company, four is a party, three is a crowd.
+      </h2>
+      <h2
+        className={`text-3xl font-extrabold my-4 text-center ${syne.className}`}
+      >
+        Five isn't anything. 
+      </h2>
     </>
   );
 }
 // pass down the session Id more. If it's there render extra content.
 
 function SignedIn() {
-  const viewer = useQueryWithAuth(api.myFunctions.getCurrentUser, {});
+  const viewer = useQueryWithAuth(api.party.getCurrentUser, {});
   const convex = useConvex();
 
   const form = useForm();
@@ -56,9 +67,9 @@ function SignedIn() {
 
   return (
     <>
-      <p className="text-center">
+      <div className="text-center">
         <CreateAdventure />
-      </p>
+      </div>
     </>
   );
 }

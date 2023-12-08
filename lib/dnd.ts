@@ -35,7 +35,7 @@ const classColors: Record<DndClass, string> = {
   "Bard": 'fuchsia' ,
   "Cleric": 'rose',
   "Druid": 'orange',
-  "Fighter": 'brown',
+  "Fighter": 'gray',
   "Monk": 'emerald',
   "Paladin": 'pink',
   "Ranger": 'green',

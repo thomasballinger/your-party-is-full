@@ -15,8 +15,8 @@ Flow:
 7. "close a
 
 TODO
-- button to join a party
 - button to request to join a party
+- button to leave party
 - script to make fake characters join parties that are not full every ~5 seconds
 
 

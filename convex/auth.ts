@@ -24,7 +24,7 @@ export const signUp = mutationWithAuth({
   },
   handler: async (ctx, { email, password }) => {
     const session = await signUpWithEmailAndPassword(ctx, email, password, {
-      user: { class: "Druid", level: 1, profile: "nice guy" },
+      user: { class: "Bard", level: 1, profile: "Just your average adventurer. Nobody special." },
       session: {},
     });
     return session.sessionId;

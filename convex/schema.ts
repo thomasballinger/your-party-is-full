@@ -12,7 +12,8 @@ export default defineSchema(
         email: v.string(),
         profile: v.string(),
         class: classValidator,
-        level: v.number()
+        level: v.number(),
+        isNpc: v.optional(v.boolean()),
       },
       session: {},
     }),

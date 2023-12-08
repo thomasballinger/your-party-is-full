@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import ConvexClientProvider from "./ConvexClientProvider";
 import { StickyHeader } from "@/components/layout/sticky-header";
-import { Logo } from "@/components/Logo";
+import { Logo, LogoLink } from "@/components/Logo";
 import { Profile } from "@/components/Profile";
 import { SignOutButton } from "./auth";
 import { HeaderAuth } from "./HeaderAuth";
@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ConvexClientProvider>
           <StickyHeader className="p-2 flex items-center justify-between">
-            <Logo />
+            <LogoLink />
             <div className="flex">
               <HeaderAuth/>
             </div>

@@ -5,7 +5,7 @@ import { useQueryWithAuth } from "@convex-dev/convex-lucia-auth/react";
 import { ClassIcon } from "./ClassIcon";
 
 export function Profile() {
-  const user = useQueryWithAuth(api.myFunctions.getCurrentUser, {});
+  const user = useQueryWithAuth(api.party.getCurrentUser, {});
   if (!user) return "";
   return (
     <div className="flex items-center">
